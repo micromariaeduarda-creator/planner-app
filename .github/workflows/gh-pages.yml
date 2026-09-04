@@ -1,9 +1,36 @@
-Nome: Criar e publicar no GitHub Pages
+name: Build and deploy to GitHub Pages
 
-em: push: branches: - principal
+on:
+  push:
+    branches:
+      - main
 
-permissões: conteúdo: leitura páginas: gravação token de identificação: gravação
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
-jobs: build: runs-on: ubuntu-latest steps: - uses: actions/checkout@v4 - name: Usar Node.js uses: actions/setup-node@v4 with: node-version: '18' - name: Instalar dependências run: npm install - name: Compilar run: npm run build - name: Enviar artefato para o GitHub Pages uses: actions/upload-pages-artifact@v1 with: path: ./dist
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - name: Install dependencies
+        run: npm install
+      - name: Build
+        run: npm run build
+      - name: Upload artifact for GitHub Pages
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: ./dist
 
-deploy: needs: build runs-on: ubuntu-latest steps: - name: Deploy to GitHub Pages uses: actions/deploy-pages@v1
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v1
